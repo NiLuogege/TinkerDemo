@@ -31,6 +31,8 @@ import java.io.File;
 
 /**
  * Created by liangwenxiang on 2016/4/14.
+ *
+ * 用于加载patch中的 resource
  */
 public class TinkerResourceLoader {
     protected static final String RESOURCE_META_FILE = ShareConstants.RES_META_FILE;
@@ -118,6 +120,7 @@ public class TinkerResourceLoader {
             return false;
         }
         try {
+            //区分版本拿到 Resources 对象的集合，同时创建新 AssetsManager
             TinkerResourcePatcher.isResourceCanPatch(context);
         } catch (Throwable e) {
             ShareTinkerLog.e(TAG, "resource hook check failed.", e);

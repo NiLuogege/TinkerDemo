@@ -78,6 +78,8 @@ class TinkerResourcePatcher {
 
     private static long storedPatchedResModifiedTime = 0L;
 
+
+    //区分版本拿到 Resources 对象的集合，同时创建新 AssetsManager
     @SuppressWarnings("unchecked")
     public static void isResourceCanPatch(Context context) throws Throwable {
         //   - Replace mResDir to point to the external resource file instead of the .apk. This is

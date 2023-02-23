@@ -37,6 +37,8 @@ import java.util.HashMap;
  * check the complete of the dex files
  * pre-load patch dex files
  * we won't load patch library directly!
+ *
+ * 用于加载patch中的 so
  */
 public class TinkerSoLoader {
     protected static final String SO_MEAT_FILE = ShareConstants.SO_META_FILE;

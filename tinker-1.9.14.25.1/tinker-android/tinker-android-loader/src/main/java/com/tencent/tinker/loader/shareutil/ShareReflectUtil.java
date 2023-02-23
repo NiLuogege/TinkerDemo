@@ -187,6 +187,8 @@ public class ShareReflectUtil {
      * @param instance      the instance whose field is to be modified.
      * @param fieldName     the field to modify.
      * @param extraElements elements to append at the end of the array.
+     *
+     * 将补丁包的 dex (优化过的)，插入到 app的 PathClassLoader pathList de Elements数组的最前面
      */
     public static void expandFieldArray(Object instance, String fieldName, Object[] extraElements)
         throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {

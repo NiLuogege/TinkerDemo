@@ -17,6 +17,8 @@ import dalvik.system.PathClassLoader;
 
 /**
  * Created by tangyinsheng on 2020-01-09.
+ *
+ * 用于加载patch中的 class
  */
 @Keep
 @SuppressLint("NewApi")

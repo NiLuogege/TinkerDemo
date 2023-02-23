@@ -38,4 +38,9 @@ dependencies {
 
     api project(':tinker-android:tinker-android-lib')
     api project(':tinker-android:tinker-android-loader')
+    //可选，用于生成application类
+    annotationProcessor project(':tinker-android:tinker-android-anno')
+    //可选，用于生成application类
+    compileOnly project(':tinker-android:tinker-android-anno')
+    compileOnly project(':tinker-android:tinker-android-anno-support')
 }

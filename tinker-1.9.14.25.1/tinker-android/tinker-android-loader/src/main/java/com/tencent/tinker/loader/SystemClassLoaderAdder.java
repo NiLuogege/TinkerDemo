@@ -75,6 +75,7 @@ public class SystemClassLoaderAdder {
         }
     }
 
+    //对不同版本的进行兼容
     static void injectDexesInternal(ClassLoader cl, List<File> dexFiles, File optimizeDir) throws Throwable {
         if (Build.VERSION.SDK_INT >= 23) {
             V23.install(cl, dexFiles, optimizeDir);
@@ -288,6 +289,7 @@ public class SystemClassLoaderAdder {
             Field pathListField = ShareReflectUtil.findField(loader, "pathList");
             Object dexPathList = pathListField.get(loader);
             ArrayList<IOException> suppressedExceptions = new ArrayList<IOException>();
+            //将补丁包的 dex (优化过的)，插入到 app的 PathClassLoader pathList de Elements数组的最前面
             ShareReflectUtil.expandFieldArray(dexPathList, "dexElements", makeDexElements(dexPathList,
                 new ArrayList<File>(additionalClassPathEntries), optimizedDirectory,
                 suppressedExceptions));
