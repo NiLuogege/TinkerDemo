@@ -137,6 +137,7 @@ public class Tinker {
     public void install(Intent intentResult, Class<? extends AbstractResultService> serviceClass,
                         AbstractPatch upgradePatch) {
         sInstalled = true;
+        //将UpgradePatch和DefaultTinkerResultService 组合进TinkerPatchService
         TinkerPatchService.setPatchProcessor(upgradePatch, serviceClass);
 
         ShareTinkerLog.i(TAG, "try to install tinker, isEnable: %b, version: %s", isTinkerEnabled(), ShareConstants.TINKER_VERSION);

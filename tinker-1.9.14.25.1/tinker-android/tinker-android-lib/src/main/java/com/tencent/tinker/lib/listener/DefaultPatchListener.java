@@ -63,6 +63,7 @@ public class DefaultPatchListener implements PatchListener {
         final int returnCode = patchCheck(path, patchMD5);
         if (returnCode == ShareConstants.ERROR_PATCH_OK) {
             runForgService();
+            //补丁校验成功，则启动服务来处理patch合成，这个服务是单独起了patch进程的
             TinkerPatchService.runPatchService(context, path);
         } else {
             Tinker.with(context).getLoadReporter().onLoadPatchListenerReceiveFail(new File(path), returnCode);

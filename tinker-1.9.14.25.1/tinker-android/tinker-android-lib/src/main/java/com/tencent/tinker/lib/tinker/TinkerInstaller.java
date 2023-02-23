@@ -57,6 +57,8 @@ public class TinkerInstaller {
      * @param listener
      * @param resultServiceClass
      * @param upgradePatchProcessor
+     *
+     * 其实就是初始化Tinker
      */
     public static Tinker install(ApplicationLike applicationLike, LoadReporter loadReporter, PatchReporter patchReporter,
                                  PatchListener listener, Class<? extends AbstractResultService> resultServiceClass,
@@ -88,8 +90,11 @@ public class TinkerInstaller {
      *
      * @param context
      * @param patchLocation
+     *
+     * 要安装新的补丁文件
      */
     public static void onReceiveUpgradePatch(Context context, String patchLocation) {
+        //调用到 DefaultPatchListener.onPatchReceived
         Tinker.with(context).getPatchListener().onPatchReceived(patchLocation);
     }
 

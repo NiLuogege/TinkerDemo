@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.tencent.tinker.anno.DefaultLifeCycle;
 import com.tencent.tinker.entry.DefaultApplicationLike;
+import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import com.tencent.tinker.loader.app.TinkerApplication;
 import com.tencent.tinker.loader.shareutil.ShareConstants;
 
@@ -18,5 +19,7 @@ public class MyApp extends TinkerApplication {
     protected MyApp(int tinkerFlags) {
         super(tinkerFlags);
         app=this;
+
+//        TinkerInstaller.install()
     }
 }

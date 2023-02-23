@@ -20,6 +20,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_restart_app).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TinkerInstaller.onReceiveUpgradePatch(MainActivity.this,"");
+            }
+        });
+
+        findViewById(R.id.btn_load).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 ShareTinkerInternals.killAllOtherProcess(getApplicationContext());
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
@@ -45,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getResources().getColor(R.color.black);
+
 
 
 

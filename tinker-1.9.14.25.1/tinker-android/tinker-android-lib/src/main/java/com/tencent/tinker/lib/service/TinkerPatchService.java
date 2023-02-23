@@ -58,12 +58,14 @@ public class TinkerPatchService extends IntentService {
         setIntentRedelivery(true);
     }
 
+    //处理patch合成，这个服务是单独起了patch进程的
     public static void runPatchService(final Context context, final String path) {
         ShareTinkerLog.i(TAG, "run patch service...");
         Intent intent = new Intent(context, TinkerPatchService.class);
         intent.putExtra(PATCH_PATH_EXTRA, path);
         intent.putExtra(RESULT_CLASS_EXTRA, resultServiceClass.getName());
         try {
+            //启动当前服务
             context.startService(intent);
         } catch (Throwable thr) {
             ShareTinkerLog.e(TAG, "run patch service fail, exception:" + thr);
@@ -97,7 +99,9 @@ public class TinkerPatchService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        ////提升服务优先级为前台，减少内存紧张时候被lmk kill的风险
         increasingPriority();
+        ////服务执行
         doApplyPatch(this, intent);
     }
 
@@ -220,6 +224,7 @@ public class TinkerPatchService extends IntentService {
                 if (upgradePatchProcessor == null) {
                     throw new TinkerRuntimeException("upgradePatchProcessor is null.");
                 }
+                //合成patch ,调用到 UpgradePatch 的 tryPatch 方法
                 result = upgradePatchProcessor.tryPatch(context, path, patchResult);
             } catch (Throwable throwable) {
                 e = throwable;
@@ -238,7 +243,7 @@ public class TinkerPatchService extends IntentService {
 
             unmarkRunning(context);
             sIsPatchApplying.set(false);
-
+            //通过AbstractResultService实现类来处理返回结果，比如定制一些合成完成之后的退出机制。
             AbstractResultService.runResultService(context, patchResult, getPatchResultExtra(intent));
         } finally {
             unmarkRunning(context);

@@ -76,6 +76,7 @@ public class DexDiffPatchInternal extends BasePatchInternal {
             ShareTinkerLog.w(TAG, "patch recover, dex is not enabled");
             return true;
         }
+        //拿到 dex差分包的 信息文件
         String dexMeta = checker.getMetaContentMap().get(DEX_META_FILE);
 
         if (dexMeta == null) {
@@ -84,6 +85,7 @@ public class DexDiffPatchInternal extends BasePatchInternal {
         }
 
         long begin = SystemClock.elapsedRealtime();
+        //开始合并
         boolean result = patchDexExtractViaDexDiff(context, patchVersionDirectory, dexMeta, patchFile, patchResult);
         long cost = SystemClock.elapsedRealtime() - begin;
         ShareTinkerLog.i(TAG, "recover dex result:%b, cost:%d", result, cost);
@@ -173,6 +175,7 @@ public class DexDiffPatchInternal extends BasePatchInternal {
             return false;
         }
 
+        //拿到差分包下所有的 dex ,jar ,apk
         File dexFiles = new File(dir);
         File[] files = dexFiles.listFiles();
         List<File> legalFiles = new ArrayList<>();
@@ -192,7 +195,9 @@ public class DexDiffPatchInternal extends BasePatchInternal {
 
         ShareTinkerLog.i(TAG, "legal files to do dexopt: " + legalFiles);
 
+        //创建 dex2oat 后的 文件件
         final String optimizeDexDirectory = patchVersionDirectory + "/" + DEX_OPTIMIZE_PATH + "/";
+        //执行这个
         return dexOptimizeDexFiles(context, legalFiles, optimizeDexDirectory, patchFile, patchResult);
 
     }

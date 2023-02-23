@@ -95,9 +95,13 @@ public class TinkerManager {
         //you can set your own upgrade patch if you need
         AbstractPatch upgradePatchProcessor = new UpgradePatch();
 
-        TinkerInstaller.install(appLike,
-            loadReporter, patchReporter, patchListener,
-            SampleResultService.class, upgradePatchProcessor);
+        TinkerInstaller.install(
+                appLike,
+            loadReporter,//加载合成的包的报告类
+                patchReporter,//打修复包过程中的报告类
+                patchListener,//对修复包最开始的检查
+            SampleResultService.class,//patch包合成完成的后续操作服务
+                upgradePatchProcessor);
 
         isInstalled = true;
     }

@@ -93,6 +93,7 @@ public class SampleApplicationLike extends DefaultApplicationLike {
 
         //installTinker after load multiDex
         //or you can put com.tencent.tinker.** to main dex
+        //tinker 安装过程
         TinkerManager.installTinker(this);
         Tinker tinker = Tinker.with(getApplication());
     }

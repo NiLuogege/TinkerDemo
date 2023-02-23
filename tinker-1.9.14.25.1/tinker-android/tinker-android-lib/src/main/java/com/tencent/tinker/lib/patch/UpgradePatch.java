@@ -46,12 +46,13 @@ public class UpgradePatch extends AbstractPatch {
         Tinker manager = Tinker.with(context);
 
         final File patchFile = new File(tempPatchPath);
-
+        //tinker热修复enbale
         if (!manager.isTinkerEnabled() || !ShareTinkerInternals.isTinkerEnableWithSharedPreferences(context)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:patch is disabled, just return");
             return false;
         }
 
+        //patch文件合法
         if (!SharePatchFileUtil.isLegalFile(patchFile)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:patch file is not found, just return");
             return false;
@@ -151,6 +152,7 @@ public class UpgradePatch extends AbstractPatch {
         ShareTinkerLog.i(TAG, "UpgradePatch tryPatch:patchVersionDirectory:%s", patchVersionDirectory);
 
         //copy file
+        //把补丁包复制到/data/data/com.stan.tinkersdkdemo/tinker/patch-8b79c8cc/patch-8b79c8cc.apk
         File destPatchFile = new File(patchVersionDirectory + "/" + SharePatchFileUtil.getPatchVersionFile(patchMd5));
 
         try {
@@ -167,32 +169,38 @@ public class UpgradePatch extends AbstractPatch {
         }
 
         //we use destPatchFile instead of patchFile, because patchFile may be deleted during the patch process
+        //合成dex
         if (!DexDiffPatchInternal.tryRecoverDexFiles(manager, signatureCheck, context, patchVersionDirectory, destPatchFile, patchResult)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:new patch recover, try patch dex failed");
             return false;
         }
 
+        //合成arkhot 针对方舟os
         if (!ArkHotDiffPatchInternal.tryRecoverArkHotLibrary(manager, signatureCheck,
                 context, patchVersionDirectory, destPatchFile)) {
             return false;
         }
 
+        //合成so
         if (!BsDiffPatchInternal.tryRecoverLibraryFiles(manager, signatureCheck, context, patchVersionDirectory, destPatchFile)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:new patch recover, try patch library failed");
             return false;
         }
 
+        //合成resource
         if (!ResDiffPatchInternal.tryRecoverResourceFiles(manager, signatureCheck, context, patchVersionDirectory, destPatchFile)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:new patch recover, try patch resource failed");
             return false;
         }
 
         // check dex opt file at last, some phone such as VIVO/OPPO like to change dex2oat to interpreted
+        //对dex进行opt优化
         if (!DexDiffPatchInternal.waitAndCheckDexOptFile(patchFile, manager)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:new patch recover, check dex opt file failed");
             return false;
         }
 
+        //把结果重新写入到 patch.info
         if (!SharePatchInfo.rewritePatchInfoFileWithLock(patchInfoFile, newInfo, patchInfoLockFile)) {
             ShareTinkerLog.e(TAG, "UpgradePatch tryPatch:new patch recover, rewrite patch info failed");
             manager.getPatchReporter().onPatchInfoCorrupted(patchFile, newInfo.oldVersion, newInfo.newVersion);
