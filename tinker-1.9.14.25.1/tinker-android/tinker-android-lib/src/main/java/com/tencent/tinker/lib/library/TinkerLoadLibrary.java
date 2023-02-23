@@ -161,6 +161,7 @@ public class TinkerLoadLibrary {
                 if (verifyMd5 && !SharePatchFileUtil.verifyFileMd5(library, loadResult.libs.get(name))) {
                     tinker.getLoadReporter().onLoadFileMd5Mismatch(library, ShareConstants.TYPE_LIBRARY);
                 } else {
+                    //直接进行 System.load 就行了
                     System.load(patchLibraryPath);
                     ShareTinkerLog.i(TAG, "loadLibraryFromTinker success:" + patchLibraryPath);
                     return true;

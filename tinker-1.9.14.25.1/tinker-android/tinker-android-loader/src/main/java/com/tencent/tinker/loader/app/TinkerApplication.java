@@ -119,6 +119,7 @@ public abstract class TinkerApplication extends Application {
     private void loadTinker() {
         try {
             //reflect tinker loader, because loaderClass may be define by user!
+            //调用TinkerLoader.tryLoad 会返回一个 Intent
             Class<?> tinkerLoadClass = Class.forName(loaderClassName, false, TinkerApplication.class.getClassLoader());
             Method loadMethod = tinkerLoadClass.getMethod(TINKER_LOADER_METHOD, TinkerApplication.class);
             Constructor<?> constructor = tinkerLoadClass.getConstructor();
@@ -144,6 +145,7 @@ public abstract class TinkerApplication extends Application {
             final Class<?> delegateClass = Class.forName(delegateClassName, false, mCurrentClassLoader);
             final Constructor<?> constructor = delegateClass.getConstructor(Application.class, int.class, boolean.class,
                     long.class, long.class, Intent.class);
+            //创建 DefaultApplicationLike 对象
             final Object appLike = constructor.newInstance(app, tinkerFlags, tinkerLoadVerifyFlag,
                     applicationStartElapsedTime, applicationStartMillisTime, resultIntent);
             final Class<?> inlineFenceClass = Class.forName(
@@ -158,10 +160,16 @@ public abstract class TinkerApplication extends Application {
         }
     }
 
+    /**
+     * loadTinker: 反射执行TinkerLoader.tryLoad 方法。
+     * createInlineFence，绑定代理DefaultApplicationLike。
+     */
     protected void onBaseContextAttached(Context base, long applicationStartElapsedTime, long applicationStartMillisTime) {
         try {
+            //反射执行TinkerLoader.tryLoad 方法。
             loadTinker();
             mCurrentClassLoader = base.getClassLoader();
+            //创建 DefaultApplicationLike 代理类并绑定
             mInlineFence = createInlineFence(this, tinkerFlags, delegateClassName,
                     tinkerLoadVerifyFlag, applicationStartElapsedTime, applicationStartMillisTime,
                     tinkerResultIntent);
@@ -183,6 +191,7 @@ public abstract class TinkerApplication extends Application {
         final long applicationStartElapsedTime = SystemClock.elapsedRealtime();
         final long applicationStartMillisTime = System.currentTimeMillis();
         Thread.setDefaultUncaughtExceptionHandler(new TinkerUncaughtHandler(this));
+        //调用 onBaseContextAttached
         onBaseContextAttached(base, applicationStartElapsedTime, applicationStartMillisTime);
     }
 

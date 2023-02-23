@@ -37,6 +37,8 @@ public class TinkerInstaller {
      * or you can just use {@link TinkerApplicationHelper}'s api
      *
      * @param applicationLike
+     *
+     * 初始化相关
      */
     public static Tinker install(ApplicationLike applicationLike) {
         Tinker tinker = new Tinker.Builder(applicationLike.getApplication()).build();

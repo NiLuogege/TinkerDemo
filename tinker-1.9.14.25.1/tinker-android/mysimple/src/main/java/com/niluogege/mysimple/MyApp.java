@@ -5,15 +5,18 @@ import android.content.Intent;
 
 import com.tencent.tinker.anno.DefaultLifeCycle;
 import com.tencent.tinker.entry.DefaultApplicationLike;
+import com.tencent.tinker.loader.app.TinkerApplication;
 import com.tencent.tinker.loader.shareutil.ShareConstants;
 
 
-public class MyApp extends DefaultApplicationLike {
+//TinkerApplication 是 Tinker提供的在里面干了很多事儿
+//入口方法是 attachBaseContext
+public class MyApp extends TinkerApplication {
     public static MyApp app;
 
-    public MyApp(Application application, int tinkerFlags, boolean tinkerLoadVerifyFlag, long applicationStartElapsedTime, long applicationStartMillisTime, Intent tinkerResultIntent) {
-        super(application, tinkerFlags, tinkerLoadVerifyFlag, applicationStartElapsedTime, applicationStartMillisTime, tinkerResultIntent);
 
+    protected MyApp(int tinkerFlags) {
+        super(tinkerFlags);
         app=this;
     }
 }

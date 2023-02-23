@@ -46,6 +46,8 @@ public class TinkerResourceLoader {
 
     /**
      * Load tinker resources
+     *
+     * 加载资源补丁
      */
     public static boolean loadTinkerResources(TinkerApplication application, String directory, Intent intentResult) {
         if (resPatchInfo == null || resPatchInfo.resArscMd5 == null) {

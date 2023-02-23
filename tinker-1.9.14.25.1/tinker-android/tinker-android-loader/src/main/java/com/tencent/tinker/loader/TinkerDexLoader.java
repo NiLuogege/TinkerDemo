@@ -62,6 +62,8 @@ public class TinkerDexLoader {
      * the Application ClassLoader.
      *
      * @param application The application.
+     *
+     * 加载 dex 补丁 将他们加入到 Application ClassLoader （也是就是PathClassLoader） 的 Elements 集合的最前面
      */
     public static boolean loadTinkerJars(final TinkerApplication application, String directory, String oatDir, Intent intentResult, boolean isSystemOTA, boolean isProtectedApp) {
         if (LOAD_DEX_LIST.isEmpty() && classNDexInfo.isEmpty()) {
@@ -105,6 +107,7 @@ public class TinkerDexLoader {
             legalFiles.add(file);
         }
         // verify merge classN.apk
+        //对apk进行md5校验
         if (isVmArt && !classNDexInfo.isEmpty()) {
             File classNFile = new File(dexPath + ShareConstants.CLASS_N_APK_NAME);
             long start = System.currentTimeMillis();
@@ -125,6 +128,7 @@ public class TinkerDexLoader {
         }
         File optimizeDir = new File(directory + "/" + oatDir);
 
+        //如果系统ota升级了，删除oat文件，重新编译
         if (isSystemOTA) {
             final boolean[] parallelOTAResult = {true};
             final Throwable[] parallelOTAThrowable = new Throwable[1];
@@ -151,6 +155,7 @@ public class TinkerDexLoader {
             // change dir
             optimizeDir = new File(directory + "/" + INTERPRET_DEX_OPTIMIZE_PATH);
 
+            //触发dex2oat编译
             TinkerDexOptimizer.optimizeAll(
                   application, legalFiles, optimizeDir, true,
                   application.isUseDelegateLastClassLoader(), targetISA,
@@ -188,6 +193,7 @@ public class TinkerDexLoader {
         }
         try {
             final boolean useDLC = application.isUseDelegateLastClassLoader();
+            //加载dex ，兼容了V4、V14、 V19、V23这么多个版本
             SystemClassLoaderAdder.installDexes(application, classLoader, optimizeDir, legalFiles, isProtectedApp, useDLC);
         } catch (Throwable e) {
             ShareTinkerLog.e(TAG, "install dexes failed");

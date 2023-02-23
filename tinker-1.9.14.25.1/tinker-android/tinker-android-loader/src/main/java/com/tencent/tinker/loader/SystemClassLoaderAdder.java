@@ -51,6 +51,7 @@ public class SystemClassLoaderAdder {
     private static final String TAG = "Tinker.ClassLoaderAdder";
     private static int sPatchDexCount = 0;
 
+    //加载dex ，兼容了V4、V14、 V19、V23这么多个版本
     public static void installDexes(Application application, ClassLoader loader, File dexOptDir, List<File> files,
                                     boolean isProtectedApp, boolean useDLC) throws Throwable {
         ShareTinkerLog.i(TAG, "installDexes dexOptDir: " + dexOptDir.getAbsolutePath() + ", dex size:" + files.size());
@@ -61,6 +62,7 @@ public class SystemClassLoaderAdder {
             if (Build.VERSION.SDK_INT >= 24 && !isProtectedApp) {
                 classLoader = NewClassLoaderInjector.inject(application, loader, dexOptDir, useDLC, files);
             } else {
+                //对不同版本做不同处理
                 injectDexesInternal(classLoader, files, dexOptDir);
             }
             //install done
@@ -78,6 +80,7 @@ public class SystemClassLoaderAdder {
     //对不同版本的进行兼容
     static void injectDexesInternal(ClassLoader cl, List<File> dexFiles, File optimizeDir) throws Throwable {
         if (Build.VERSION.SDK_INT >= 23) {
+            //这里以 api 23为例
             V23.install(cl, dexFiles, optimizeDir);
         } else if (Build.VERSION.SDK_INT >= 19) {
             V19.install(cl, dexFiles, optimizeDir);
@@ -215,6 +218,11 @@ public class SystemClassLoaderAdder {
      */
     private static final class V23 {
 
+        /**
+         * 首先反射拿到反射得到 PathClassLoader 中的 pathList 对象,再将补丁文件通过反射调用makeDexElements
+         * 得到补丁文件的 Element[] ,再将补丁包的 Element[] 数组插入到 dexElements 中且在最前面，
+         * 这样修复dex会在原来dex之前被加载，修复成功
+         */
         private static void install(ClassLoader loader, List<File> additionalClassPathEntries,
                                     File optimizedDirectory)
             throws IllegalArgumentException, IllegalAccessException,
@@ -224,6 +232,7 @@ public class SystemClassLoaderAdder {
              * dalvik.system.DexPathList pathList field to append additional DEX
              * file entries.
              */
+            //反射得到 PathClassLoader 中的 pathList 对象
             Field pathListField = ShareReflectUtil.findField(loader, "pathList");
             Object dexPathList = pathListField.get(loader);
             ArrayList<IOException> suppressedExceptions = new ArrayList<IOException>();

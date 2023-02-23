@@ -54,12 +54,21 @@ public class TinkerLoader extends AbstractTinkerLoader {
         Intent resultIntent = new Intent();
 
         long begin = SystemClock.elapsedRealtime();
+        //加载补丁
         tryLoadPatchFilesInternal(app, resultIntent);
         long cost = SystemClock.elapsedRealtime() - begin;
         ShareIntentUtil.setIntentPatchCostTime(resultIntent, cost);
         return resultIntent;
     }
 
+    /**
+     * 1.一系列检查:tinker功能是否打开、tinker文件夹是否存在、patch.info文件是否存在。
+     * 2.通过patch.info校验patch有效性，决定是否加载new patch。
+     * 3.补丁包校验：签名检查、tinkerid是否与基准包一致等。
+     * 4.检查tinkerFlag确认开启了哪些修复功能：
+     * 5.加载dex、arthot、resource补丁。这里并没有尝试加载so，arthot是针对华为的，在1.9.6之后的某个版本专门针对华为新增的修复类型。
+     * 6.art环境且系统做ota升级，需要重新loadDexFile,因为之前的odex会失效。
+     */
     private void tryLoadPatchFilesInternal(TinkerApplication app, Intent resultIntent) {
         final int tinkerFlag = app.getTinkerFlags();
 
@@ -277,7 +286,7 @@ public class TinkerLoader extends AbstractTinkerLoader {
 
 
         final boolean isEnabledForNativeLib = ShareTinkerInternals.isTinkerEnabledForNativeLib(tinkerFlag);
-
+        //是否需要记在so
         if (isEnabledForNativeLib) {
             //tinker/patch.info/patch-641e634c/lib
             boolean libCheck = TinkerSoLoader.checkComplete(patchVersionDirectory, securityCheck, resultIntent);
@@ -343,6 +352,7 @@ public class TinkerLoader extends AbstractTinkerLoader {
         }
 
         //now we can load patch jar
+        //加载 dex 补丁
         if (!isArkHotRuning && isEnabledForDex) {
             boolean loadTinkerJars = TinkerDexLoader.loadTinkerJars(app, patchVersionDirectory, oatDex, resultIntent, isSystemOTA, isProtectedApp);
 

@@ -11,5 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="加载补丁"/>
+    <Button
+        android:id="@+id/btn_restart_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重启app"/>
 
 </LinearLayout>
