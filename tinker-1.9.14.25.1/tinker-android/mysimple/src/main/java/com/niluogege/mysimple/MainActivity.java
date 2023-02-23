@@ -30,5 +30,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        getResources().getColor(R.color.black);
+
     }
 }

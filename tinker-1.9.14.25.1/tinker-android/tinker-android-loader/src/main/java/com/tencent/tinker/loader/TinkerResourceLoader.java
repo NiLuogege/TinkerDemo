@@ -64,6 +64,7 @@ public class TinkerResourceLoader {
             ShareTinkerLog.i(TAG, "verify resource file:" + resourceFile.getPath() + " md5, use time: " + (System.currentTimeMillis() - start));
         }
         try {
+            //合并资源
             TinkerResourcePatcher.monkeyPatchExistingResources(application, resourceString, false);
             ShareTinkerLog.i(TAG, "monkeyPatchExistingResources resource file:" + resourceString + ", use time: " + (System.currentTimeMillis() - start));
         } catch (Throwable e) {

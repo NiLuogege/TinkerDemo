@@ -289,6 +289,7 @@ public class TinkerLoader extends AbstractTinkerLoader {
         }
 
         //check resource
+        //是否需要资源替换？
         final boolean isEnabledForResource = ShareTinkerInternals.isTinkerEnabledForResource(tinkerFlag);
         ShareTinkerLog.w(TAG, "tryLoadPatchFiles:isEnabledForResource:" + isEnabledForResource);
         if (isEnabledForResource) {
@@ -376,6 +377,7 @@ public class TinkerLoader extends AbstractTinkerLoader {
 
         //now we can load patch resource
         if (isEnabledForResource) {
+            //对资源做替换
             boolean loadTinkerResources = TinkerResourceLoader.loadTinkerResources(app, patchVersionDirectory, resultIntent);
             if (!loadTinkerResources) {
                 ShareTinkerLog.w(TAG, "tryLoadPatchFiles:onPatchLoadResourcesFail");

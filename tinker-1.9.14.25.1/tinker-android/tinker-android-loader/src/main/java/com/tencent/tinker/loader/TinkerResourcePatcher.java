@@ -80,6 +80,7 @@ class TinkerResourcePatcher {
 
 
     //区分版本拿到 Resources 对象的集合，同时创建新 AssetsManager
+    //这里只是反射按到了所有的需要的东西，还没有最终处理
     @SuppressWarnings("unchecked")
     public static void isResourceCanPatch(Context context) throws Throwable {
         //   - Replace mResDir to point to the external resource file instead of the .apk. This is
@@ -216,8 +217,10 @@ class TinkerResourcePatcher {
             return;
         }
 
+        //创建一个新的 AssetManager
         newAssetManager = (AssetManager) newAssetManagerCtor.newInstance();
         // Create a new AssetManager instance and point it to the resources installed under
+        // 调用 addAssetPath 方法将 补丁中的 资源路径传入到 AssetManager 中
         if (((Integer) addAssetPathMethod.invoke(newAssetManager, externalResourceFile)) == 0) {
             throw new IllegalStateException("Could not create new AssetManager");
         }
@@ -244,12 +247,14 @@ class TinkerResourcePatcher {
             ensureStringBlocksMethod.invoke(newAssetManager);
         }
 
+        //遍历所有的 Resources 替换他们的 AssetManager ，替换以后就完成了
         for (WeakReference<Resources> wr : references) {
             final Resources resources = wr.get();
             if (resources == null) {
                 continue;
             }
             // Set the AssetManager of the Resources instance to our brand new one
+            //替换 AssetManager 中的 mAssets 变量 （不同版本替换方法不同）
             try {
                 //pre-N
                 assetsFiled.set(resources, newAssetManager);
