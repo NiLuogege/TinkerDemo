@@ -99,6 +99,7 @@ class TinkerResourcePatcher {
             loadedApkClass = Class.forName("android.app.ActivityThread$PackageInfo");
         }
 
+        //利用 packagesFiled 反射获取 LoadedApk 对象，<27外加resourcePackagesFiled
         resDir = findField(loadedApkClass, "mResDir");
         packagesFiled = findField(activityThread, "mPackages");
         if (Build.VERSION.SDK_INT < 27) {
@@ -181,6 +182,8 @@ class TinkerResourcePatcher {
      * @param context
      * @param externalResourceFile
      * @throws Throwable
+     *
+     *  //加载资源
      */
     public static void monkeyPatchExistingResources(Context context, String externalResourceFile, boolean isReInject) throws Throwable {
         if (externalResourceFile == null) {
@@ -204,8 +207,10 @@ class TinkerResourcePatcher {
                 if (loadedApk == null) {
                     continue;
                 }
+                //从 LoadedApk 对象中获取 mResDir 属性, 即资源文件路径
                 final String resDirPath = (String) resDir.get(loadedApk);
                 if (appInfo.sourceDir.equals(resDirPath)) {
+                    //将修复资源放入资源文件路径
                     resDir.set(loadedApk, externalResourceFile);
                 }
             }
@@ -268,6 +273,7 @@ class TinkerResourcePatcher {
 
             clearPreloadTypedArrayIssue(resources);
 
+            //更新配置
             resources.updateConfiguration(resources.getConfiguration(), resources.getDisplayMetrics());
         }
 

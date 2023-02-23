@@ -387,7 +387,7 @@ public class TinkerLoader extends AbstractTinkerLoader {
 
         //now we can load patch resource
         if (isEnabledForResource) {
-            //对资源做替换
+            //加载资源补丁
             boolean loadTinkerResources = TinkerResourceLoader.loadTinkerResources(app, patchVersionDirectory, resultIntent);
             if (!loadTinkerResources) {
                 ShareTinkerLog.w(TAG, "tryLoadPatchFiles:onPatchLoadResourcesFail");

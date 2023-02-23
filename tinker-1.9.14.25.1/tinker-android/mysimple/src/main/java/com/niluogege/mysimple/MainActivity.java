@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 //注意这里只是示意，运行的话会报错
                 //三步走
                 //初始化 初始化相关
-                TinkerInstaller.install(MyApp.app);
+//                TinkerInstaller.install(MyApp.app);
 
                 //加载patch包
                 TinkerInstaller.onReceiveUpgradePatch(MainActivity.this,"");

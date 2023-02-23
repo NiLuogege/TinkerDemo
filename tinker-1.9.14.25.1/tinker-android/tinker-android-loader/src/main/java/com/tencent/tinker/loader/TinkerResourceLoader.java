@@ -57,6 +57,7 @@ public class TinkerResourceLoader {
         File resourceFile = new File(resourceString);
         long start = System.currentTimeMillis();
 
+        //校验资源补丁包 resources.apk 的 md5 值
         if (application.isTinkerLoadVerifyFlag()) {
             if (!SharePatchFileUtil.checkResourceArscMd5(resourceFile, resPatchInfo.resArscMd5)) {
                 ShareTinkerLog.e(TAG, "Failed to load resource file, path: " + resourceFile.getPath() + ", expect md5: " + resPatchInfo.resArscMd5);
@@ -66,7 +67,7 @@ public class TinkerResourceLoader {
             ShareTinkerLog.i(TAG, "verify resource file:" + resourceFile.getPath() + " md5, use time: " + (System.currentTimeMillis() - start));
         }
         try {
-            //合并资源
+            //加载资源
             TinkerResourcePatcher.monkeyPatchExistingResources(application, resourceString, false);
             ShareTinkerLog.i(TAG, "monkeyPatchExistingResources resource file:" + resourceString + ", use time: " + (System.currentTimeMillis() - start));
         } catch (Throwable e) {
